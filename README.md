@@ -10,9 +10,11 @@
 
 升学 E 网通 (EWT360) 试题答案获取
 
-脚本主页：https://greasyfork.org/zh-CN/scripts/524802-%E5%8D%87%E5%AD%A6-e-%E7%BD%91%E9%80%9A-ewt360-%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96
+脚本主页：[https://greasyfork.org/zh-CN/scripts/524802-升学-e-网通-ewt360-试题答案获取](https://greasyfork.org/zh-CN/scripts/524802-%E5%8D%87%E5%AD%A6-e-%E7%BD%91%E9%80%9A-ewt360-%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96)
 
-此脚本在各浏览器与JavaScript引擎中均具有良好的兼容性（* Internet Explorer与Duktape除外）。
+[Github仓库](https://github.com/zhicheng233/GetEWTAnswers)
+
+**此脚本在各浏览器与JavaScript引擎中均具有良好的兼容性（ Internet Explorer与Duktape除外）。**
 
 重新逆向2025 EWT 相关 API
 
@@ -20,21 +22,31 @@
 
 ## 如何使用
 该项目为Tampermonkey(油猴)脚本，你需要在你的浏览器内安装一个用户脚本管理器。
+
+<summary>
+
 #### 桌面端
+
+</summary>
 <details>
 
- - Microsoft
+- Microsoft
    Edge：[Tampermonkey](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
 
- - Chrome：[Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) 或 [Violentmonkey](https://chrome.google.com/webstore/detail/violent-monkey/jinjaccalgkegednnccohejagnlnfdag)
- - Firefox：[Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)
+- Chrome：[Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) 或 [Violentmonkey](https://chrome.google.com/webstore/detail/violent-monkey/jinjaccalgkegednnccohejagnlnfdag)
+- Firefox：[Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)
    、[Tampermonkey](https://addons.mozilla.org/firefox/addon/tampermonkey/)
    或 [Violentmonkey](https://addons.mozilla.org/firefox/addon/violentmonkey/)
- - Safari：[Tampermonkey](https://www.tampermonkey.net/?browser=safari)
+- Safari：[Tampermonkey](https://www.tampermonkey.net/?browser=safari)
    或 [Userscripts](https://apps.apple.com/app/userscripts/id1463298887)
+
  </details>
+<summary>
+
 
 #### 手机端（Android）
+</summary>
+
 <details>
 
  - Microsoft Edge：扩展-
@@ -44,7 +56,10 @@
   或 [Violentmonkey](https://addons.mozilla.org/firefox/addon/violentmonkey/)
 </details>
 
+<summary>
+
 #### 手机端（iOS）
+</summary>
 <details>
 
 - Safari：[Tampermonkey](https://www.tampermonkey.net/?browser=safari)
@@ -53,7 +68,7 @@
 
 安装完脚本管理器后安装此用户脚本
 
-访问:https://greasyfork.org/zh-CN/scripts/524802-%E5%8D%87%E5%AD%A6-e-%E7%BD%91%E9%80%9A-ewt360-%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96
+访问:[Greasyfork脚本主页](https://greasyfork.org/zh-CN/scripts/524802-%E5%8D%87%E5%AD%A6-e-%E7%BD%91%E9%80%9A-ewt360-%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96)
 
 
 由于EWT对API进行了鉴权，你需要获取一个已经完成的试题的reportId
