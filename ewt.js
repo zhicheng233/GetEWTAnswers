@@ -59,7 +59,7 @@
                 <p>Ver.0.1 2025.1</p> 
                 <p>By:志成🍥 ZCROM</p>
                 <a href="https://blog.zhicheng233.top">个人博客</a>
-                <a href="">Github</a>
+                <a href="https://github.com/zhicheng233/GetEWTAnswers">Github</a>
                 <p>请开发者打一局 maimai 或者请开发者买 糖🍬 如何？<a href="https://zhicheng233.top/Donate/">帮帮咱🥺~</a>
             </div>
         `;
@@ -247,7 +247,7 @@
                         <p>By:志成🍥 ZCROM</p>
                         <a href="https://zhicheng233.top">主页</a>
                         <a href="https://blog.zhicheng233.top">个人博客</a>
-                        <a href="">Github</a>
+                        <a href="https://github.com/zhicheng233/GetEWTAnswers">Github</a>
                         <p>请开发者打一局 maimai 或者请开发者买 糖🍬 如何？<a href="https://zhicheng233.top/Donate/">帮帮咱🥺~</a>
                     </div>
                 </ul>
