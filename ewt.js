@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      0.1
+// @version      0.2
 // @description  此脚本在 EWT 试题中获取试题答案喵~
 // @author       志成🍥
 // @match          https://web.ewt360.com/mystudy/
@@ -91,7 +91,7 @@
     };
     
     //请求参数
-    var bizCode;
+    const bizCode = 205;
     var paperId;
     var platform;
     var reportId;
@@ -129,7 +129,7 @@
     });
         
     // 提取需要的参数
-    bizCode = parseInt(params.bizCode);
+    // bizCode = parseInt(params.bizCode);
     paperId = params.paperId;
     platform = params.platform;
     reportId = params.reportId;
