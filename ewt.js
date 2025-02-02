@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      0.2
+// @version      0.3
 // @description  此脚本在 EWT 试题中获取试题答案喵~
 // @author       志成🍥
 // @match          https://web.ewt360.com/mystudy/
@@ -46,7 +46,7 @@
             <h1>EWT答案获取设置</h1>
             <h2>请填写已完成的reportId，用于越权 BypassAPI鉴权</h2>
             <h3>如何获得?</h3>
-            <p>选择已经完成的试题,复制URL(网址)上的&reportId=到下一个&的值,比如&reportId=19158466643xxxx&videoPoint=1 则复制19158466643xxxx
+            <p>选择已经完成的试题（一定是已经完成的！！！还有不能用课后习题的，必须得是 试卷类型！！）,复制URL(网址)上的&reportId=到下一个&的值,比如&reportId=19158466643xxxx&videoPoint=1 则复制19158466643xxxx
             <div>
                 <label for="reportId">已完成的reportId：</label>
                 <input type="text" id="reportId" value="${GM_getValue('getAnswerReportId', '')}">
@@ -56,7 +56,7 @@
                 <button id="cancelSettings">取消</button>
             </div>
             <div>
-                <p>Ver.0.1 2025.1</p> 
+                <p>Ver.0.3 2025.2</p> 
                 <p>By:志成🍥 ZCROM</p>
                 <a href="https://zhicheng233.top">主页</a>
                 <a href="https://blog.zhicheng233.top">个人博客</a>
@@ -244,7 +244,7 @@
 
         htmlContent += `
                     <div>
-                        <p>Ver.0.1 2025.1</p> 
+                        <p>Ver.0.3 2025.2</p> 
                         <p>By:志成🍥 ZCROM</p>
                         <a href="https://zhicheng233.top">主页</a>
                         <a href="https://blog.zhicheng233.top">个人博客</a>

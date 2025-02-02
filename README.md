@@ -1,4 +1,4 @@
-# GetEWTAnswers
+# 😱GetEWTAnswers
 
 ![GitHub Release](https://img.shields.io/github/v/release/zhicheng233/GetEWTAnswers)
 ![GitHub Created At](https://img.shields.io/github/created-at/zhicheng233/GetEWTAnswers)
@@ -8,7 +8,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/zhicheng233/GetEWTAnswers)
 ![GitLab Issues](https://img.shields.io/gitlab/issues/open/zhicheng233%2FGetEWTAnswers)
 
-升学 E 网通 (EWT360) 试题答案获取
+😱升学 E 网通 (EWT360) 试题答案获取
 
 脚本主页：[https://greasyfork.org/zh-CN/scripts/524802-升学-e-网通-ewt360-试题答案获取](https://greasyfork.org/zh-CN/scripts/524802-%E5%8D%87%E5%AD%A6-e-%E7%BD%91%E9%80%9A-ewt360-%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96)
 
@@ -20,12 +20,12 @@
 
 > 2025这B e网通对接口做了鉴权，判断是否完成题目，但是做了跟没做一样，因为可以拿已经完成的reportId去越权获得未完成试题的答案🤣👉
 
-## 如何使用
+## 📌如何使用
 该项目为Tampermonkey(油猴)脚本，你需要在你的浏览器内安装一个用户脚本管理器。
 
 <summary>
 
-#### 桌面端
+#### 💻桌面端
 
 </summary>
 <details>
@@ -44,7 +44,7 @@
 <summary>
 
 
-#### 手机端（Android）
+#### 📱手机端（Android）
 </summary>
 
 <details>
@@ -58,7 +58,7 @@
 
 <summary>
 
-#### 手机端（iOS）
+#### 🍎手机端（iOS）
 </summary>
 <details>
 
@@ -75,11 +75,15 @@
 
 如何获得?
 
-选择已经完成的试题,复制URL(网址)上的&reportId=到下一个&的值,比如&reportId=19158466643xxxx&videoPoint=1 则复制19158466643xxxx
+选择已经完成的试题（一定是已经完成的！！！还有不能用课后习题的，必须得是 试卷类型！！）,复制URL(网址)上的&reportId=到下一个&的值,比如&reportId=19158466643xxxx&videoPoint=1 则复制19158466643xxxx
 
 将获取到的reportId填入到脚本设置中去~
 
-## 相关API
+## 🤔有问题?
+在询问之前请确定您已经认真阅读上方 ⌈如何使用⌋ 确保不是自身操作问题，咱已经遇到好几个没好好读README的了(
+如果有问题请尽量通过Github仓库给项目提Issues来询问，而不是通过邮箱、QQ或者B站，这样你的问题无法获得除咱之外的其他人帮助，同时你的案例也无法帮助其他人，提问之前请先看看Github仓库中Issues是否有人提过类似的问题，咱的时间与精力是有限的喵w//..
+
+## 🛠️相关API
 <details>
     
     URL:
@@ -109,11 +113,12 @@
 该API用于返回试题答案
 </details>
 
-## 捐赠
+## 🍭捐赠
 <p>请开发者打一局 maimai 或者请开发者买 糖🍬 如何？<a href="https://zhicheng233.top/Donate/">帮帮咱🥺~</a>
 
-## 致谢
+## 🥰致谢
 本项目的完成离不开这些贡献者的努力，感谢他们的无私付出~
+欢迎各位提交PRw//~
 
 <a href="https://github.com/zhicheng233/GetEWTAnswers/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=zhicheng233/GetEWTAnswers" />
