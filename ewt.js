@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      0.3
+// @version      0.4
 // @description  此脚本在 EWT 试题中获取试题答案喵~
 // @author       志成🍥
 // @match          https://web.ewt360.com/mystudy/
@@ -56,7 +56,7 @@
                 <button id="cancelSettings">取消</button>
             </div>
             <div>
-                <p>Ver.0.3 2025.2</p> 
+                <p>Ver.0.4 2025.5</p> 
                 <p>By:志成🍥 ZCROM</p>
                 <a href="https://zhicheng233.top">主页</a>
                 <a href="https://blog.zhicheng233.top">个人博客</a>
@@ -116,28 +116,7 @@
     if (!document.location.hash.includes('exam/answer')) {
         return;
     }
-    //获取一些必要参数
-    //获取URL
-    const url = window.location.href;
 
-    const queryString = url.split('?')[1];
-
-    const params = {};
-    queryString.split('&').forEach(item => {
-        const [key, value] = item.split('=');
-        params[key] = value;
-    });
-        
-    // 提取需要的参数
-    // bizCode = parseInt(params.bizCode);
-    paperId = params.paperId;
-    platform = params.platform;
-    reportId = params.reportId;
-
-    console.log('bizCode:', bizCode);
-    console.log('paperId:', paperId);
-    console.log('platform:', platform);
-    console.log('reportId:', reportId);
 
     //获取QuestionId,返回一个数组
     const getQuestionIdList = async () => {
@@ -244,7 +223,7 @@
 
         htmlContent += `
                     <div>
-                        <p>Ver.0.3 2025.2</p> 
+                        <p>Ver.0.4 2025.5</p> 
                         <p>By:志成🍥 ZCROM</p>
                         <a href="https://zhicheng233.top">主页</a>
                         <a href="https://blog.zhicheng233.top">个人博客</a>
@@ -281,6 +260,44 @@
         console.debug('AllAnswers:', allAnswers);
         openAnserPaper(allAnswers);
     };
-    main();
+
+    // 使用 MutationObserver 监听 URL 的变化
+    const observeURLChange = () => {
+        const observer = new MutationObserver(() => {
+            if (window.location.href.includes('reportId')) {
+                console.log('重定向完成，开始执行脚本...');
+                observer.disconnect(); // 停止观察
+                //获取一些必要参数
+                //获取URL
+                const url = window.location.href;
+
+                const queryString = url.split('?')[1];
+
+                const params = {};
+                queryString.split('&').forEach(item => {
+                    const [key, value] = item.split('=');
+                    params[key] = value;
+                });
+                    
+                // 提取需要的参数
+                // bizCode = parseInt(params.bizCode);
+                paperId = params.paperId;
+                platform = params.platform;
+                reportId = params.reportId;
+
+                console.log('bizCode:', bizCode);
+                console.log('paperId:', paperId);
+                console.log('platform:', platform);
+                console.log('reportId:', reportId);
+                main(); // 重定向完成后执行主逻辑
+            }
+        });
+
+        observer.observe(document, { subtree: true, childList: true });
+        console.log('正在监听 URL 变化...');
+    };
+
+    // 替换直接调用 main 的逻辑为监听 URL 变化
+    observeURLChange();
     
 })();
