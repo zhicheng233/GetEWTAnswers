@@ -18,6 +18,7 @@
 
 重新逆向2025 EWT 相关 API
 > 2025 7月份更新ewt获得被30min攻克的优秀成绩，杂鱼，杂鱼~
+
 > 2025这B e网通对接口做了鉴权，判断是否完成题目，但是做了跟没做一样，因为可以拿已经完成的reportId去越权获得未完成试题的答案🤣👉
 
 ## 📌如何使用
@@ -109,7 +110,7 @@
         paperId: paperId,
         reportId: getAnswerReportId,
         platform: platform,
-        bizCode: 201,
+        bizCode: 201
 该API用于返回试题答案
 </details>
 
