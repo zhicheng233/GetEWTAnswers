@@ -17,7 +17,7 @@
 **此脚本在各浏览器与JavaScript引擎中均具有良好的兼容性（ Internet Explorer与Duktape除外）。**
 
 重新逆向2025 EWT 相关 API
-
+> 2025 7月份更新ewt获得被30min攻克的优秀成绩，杂鱼，杂鱼~
 > 2025这B e网通对接口做了鉴权，判断是否完成题目，但是做了跟没做一样，因为可以拿已经完成的reportId去越权获得未完成试题的答案🤣👉
 
 ## 📌如何使用
@@ -101,15 +101,15 @@
 该API用于获取该试题的所有questionInfo
 
     URL:
-        https://web.ewt360.com/api/answerprod/web/answer/simple/question/analysis
+        https://web.ewt360.com/api/answerprod/web/answer/simple/question/info
     请求方式:
         POST
     参数:
-        client: 1,
+        questionId: questionId,
         paperId: paperId,
+        reportId: getAnswerReportId,
         platform: platform,
-        reportId: reportId,
-        bizCode: bizCode
+        bizCode: 201,
 该API用于返回试题答案
 </details>
 
