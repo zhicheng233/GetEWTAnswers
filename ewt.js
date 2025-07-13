@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      0.4
+// @version      0.5
 // @description  此脚本在 EWT 试题中获取试题答案喵~
 // @author       志成🍥
 // @match          https://web.ewt360.com/mystudy/
@@ -9,6 +9,8 @@
 // @license        GNU General Public License
 // @grant          GM_getValue
 // @grant          GM_setValue
+// @downloadURL https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.user.js
+// @updateURL https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.meta.js
 // ==/UserScript==
 
 (function() {
@@ -56,7 +58,7 @@
                 <button id="cancelSettings">取消</button>
             </div>
             <div>
-                <p>Ver.0.4 2025.5</p> 
+                <p>Ver.0.5 2025.7</p> 
                 <p>By:志成🍥 ZCROM</p>
                 <a href="https://zhicheng233.top">主页</a>
                 <a href="https://blog.zhicheng233.top">个人博客</a>
@@ -91,7 +93,7 @@
     };
     
     //请求参数
-    const bizCode = 205;
+    const bizCode = 201;
     var paperId;
     var platform;
     var reportId;
@@ -169,7 +171,7 @@
             bizCode: bizCode,
         };
         try {
-            const response = await fetch('https://web.ewt360.com/api/answerprod/web/answer/simple/question/analysis', {
+            const response = await fetch('https://web.ewt360.com/api/answerprod/web/answer/simple/question/info', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -223,7 +225,7 @@
 
         htmlContent += `
                     <div>
-                        <p>Ver.0.4 2025.5</p> 
+                        <p>Ver.0.5 2025.7</p> 
                         <p>By:志成🍥 ZCROM</p>
                         <a href="https://zhicheng233.top">主页</a>
                         <a href="https://blog.zhicheng233.top">个人博客</a>
