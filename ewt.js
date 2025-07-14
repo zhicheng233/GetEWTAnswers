@@ -93,7 +93,8 @@
     };
     
     //请求参数
-    const bizCode = 201;
+    var bizCode;
+    var answerBizCode;
     var paperId;
     var platform;
     var reportId;
@@ -168,7 +169,7 @@
             paperId: paperId,
             reportId: getAnswerReportId,
             platform: platform,
-            bizCode: bizCode,
+            bizCode: answerBizCode,
         };
         try {
             const response = await fetch('https://web.ewt360.com/api/answerprod/web/answer/simple/question/info', {
@@ -192,7 +193,7 @@
             return answers;
         } catch (error) {
             console.error('Error:', error);
-            alert('获取答案失败 QuestionId:' +  questionId + 'Error:' + error + 'result' + result);
+            //alert('获取答案失败 QuestionId:' +  questionId + 'Error:' + error + 'result' + result);
             return null;
         }
     };
@@ -225,7 +226,8 @@
 
         htmlContent += `
                     <div>
-                        <p>Ver.0.5 2025.7</p> 
+        
+                    <p>Ver.0.5 2025.7</p> 
                         <p>By:志成🍥 ZCROM</p>
                         <a href="https://zhicheng233.top">主页</a>
                         <a href="https://blog.zhicheng233.top">个人博客</a>
@@ -246,7 +248,16 @@
         var questionIdsList = await getQuestionIdList();
         var allAnswers = [];
         var lastParentQuestionId
-
+        var bizCodeList = [205, 204, 201]
+         //处理bizCode
+        for (const testBizCode of bizCodeList) {
+            answerBizCode = testBizCode
+            const isWork = await getAnswerByQuestionId(questionIdsList[0])
+            if (isWork != null) {
+                console.log("workBizCode=" + answerBizCode)
+                break
+            }
+        }
         for (const questionId of questionIdsList) {
             //处理ParentQuestionId的重复，虽然其childQuestionId不同但他们的ParentQuestionId是一样的
             if (questionId == lastParentQuestionId){
@@ -282,12 +293,12 @@
                 });
                     
                 // 提取需要的参数
-                // bizCode = parseInt(params.bizCode);
+                bizCode = parseInt(params.bizCode);
                 paperId = params.paperId;
                 platform = params.platform;
                 reportId = params.reportId;
 
-                console.log('bizCode:', bizCode);
+                //console.log('bizCode:', bizCode);
                 console.log('paperId:', paperId);
                 console.log('platform:', platform);
                 console.log('reportId:', reportId);
