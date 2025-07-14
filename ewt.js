@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      0.5
+// @version      0.6
 // @description  此脚本在 EWT 试题中获取试题答案喵~
 // @author       志成🍥
 // @match          https://web.ewt360.com/mystudy/
@@ -58,7 +58,7 @@
                 <button id="cancelSettings">取消</button>
             </div>
             <div>
-                <p>Ver.0.5 2025.7</p> 
+                <p>Ver.0.6 2025.7</p> 
                 <p>By:志成🍥 ZCROM</p>
                 <a href="https://zhicheng233.top">主页</a>
                 <a href="https://blog.zhicheng233.top">个人博客</a>
@@ -227,7 +227,7 @@
         htmlContent += `
                     <div>
         
-                    <p>Ver.0.5 2025.7</p> 
+                    <p>Ver.0.6 2025.7</p> 
                         <p>By:志成🍥 ZCROM</p>
                         <a href="https://zhicheng233.top">主页</a>
                         <a href="https://blog.zhicheng233.top">个人博客</a>
