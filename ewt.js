@@ -13,9 +13,9 @@
 // @updateURL https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.meta.js
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
-    
+
     // 设置界面的样式
     const style = `
         .ewt-settings {
@@ -66,12 +66,12 @@
                 <p>请开发者打一局 maimai 或者请开发者买 糖🍬 如何？<a href="https://zhicheng233.top/Donate/">帮帮咱🥺~</a>
             </div>
         `;
-        
+
         // 添加样式
         const styleElement = document.createElement('style');
         styleElement.textContent = style;
         document.head.appendChild(styleElement);
-        
+
         return div;
     };
 
@@ -87,11 +87,11 @@
     const showSettings = () => {
         const panel = createSettingsPanel();
         document.body.appendChild(panel);
-        
+
         document.getElementById('saveSettings').addEventListener('click', saveSettings);
         document.getElementById('cancelSettings').addEventListener('click', () => panel.remove());
     };
-    
+
     //请求参数
     var bizCode;
     var answerBizCode;
@@ -144,12 +144,12 @@
             console.log('Success:', result);
             const questionInfoList = result.data.questionInfoList;
             const questionIds = questionInfoList.map(question => {
-                if (question.parentQuestionId !="0"){
-                    return  question.parentQuestionId
-                }else{
-                    return  question.questionId
+                if (question.parentQuestionId != "0") {
+                    return question.parentQuestionId
+                } else {
+                    return question.questionId
                 }
-                
+
             });
             console.log('QuestionIds:', questionIds);
             return questionIds;
@@ -161,9 +161,10 @@
     };
 
     //获取题目答案 返回单题答案
-    const getAnswerByQuestionId = async (questionId) => {
+    const getAnswerAndMethodByQuestionId = async (questionId) => {
         var answers;
-        
+        var method;
+
         const data = {
             questionId: questionId,
             paperId: paperId,
@@ -181,16 +182,19 @@
             });
             const result = await response.json();
             console.log('Success:', result);
-            
+
             //处理有子题的情况
-            if  (result.data.childQuestions.length != 0){
+            if (result.data.childQuestions.length != 0) {
                 answers = result.data.childQuestions.map(childQuestion => childQuestion.rightAnswer);
-            }else{
+                methon = result.data.childQuestions.map(childQuestion => childQuestion.method);
+            } else {
                 answers = result.data.rightAnswer;
+                method = result.data.method;
             }
-            
+
+            const allResult = [answers, method];
             console.log('Answers:', answers);
-            return answers;
+            return allResult;
         } catch (error) {
             console.error('Error:', error);
             //alert('获取答案失败 QuestionId:' +  questionId + 'Error:' + error + 'result' + result);
@@ -198,9 +202,9 @@
         }
     };
 
-    const openAnserPaper = (allAnswers) => {
-       const newWindow = window.open('', '_blank', 'width=600,height=400');
-       let htmlContent = `
+    const openAnserPaper = (allAnswers ,allMethods) => {
+        const newWindow = window.open('', '_blank', 'width=600,height=400');
+        let htmlContent = `
            <!DOCTYPE html>
            <html lang="en">
            <head>
@@ -222,12 +226,19 @@
                <ul>
        `;
 
-       // 遍历答案并填充
-       allAnswers.forEach(item => {
-           htmlContent += `<li>${item}</li>`;
-       });
-
-       htmlContent += `
+        // 遍历答案并填充
+        //    allAnswers.forEach(item => {
+        //        htmlContent += `<li>${item}</li>`;
+        //    });
+        for (var i = 0 ;i <= allAnswers.length ;i++){
+            htmlContent += `<li>${allAnswers[i]}
+                                <details>
+                                    <summary>解析</summary>
+                                    ${allMethods[i]}
+                                </details>
+                            </li>`;
+        }
+        htmlContent += `
                </ul>
                <div>
                    <p>Ver.0.6 2025.7</p>
@@ -240,20 +251,21 @@
            </body>
            </html>
        `;
-       newWindow.document.write(htmlContent);
-       newWindow.document.close();
+        newWindow.document.write(htmlContent);
+        newWindow.document.close();
         console.debug(htmlContent);
 
     };
     const main = async () => {
         var questionIdsList = await getQuestionIdList();
         var allAnswers = [];
+        var allMethod = [];
         var lastParentQuestionId
         var bizCodeList = [205, 204, 201]
-         //处理bizCode
+        //处理bizCode
         for (const testBizCode of bizCodeList) {
             answerBizCode = testBizCode
-            const isWork = await getAnswerByQuestionId(questionIdsList[0])
+            const isWork = await getAnswerAndMethodByQuestionId(questionIdsList[0])
             if (isWork != null) {
                 console.log("workBizCode=" + answerBizCode)
                 break
@@ -261,18 +273,19 @@
         }
         for (const questionId of questionIdsList) {
             //处理ParentQuestionId的重复，虽然其childQuestionId不同但他们的ParentQuestionId是一样的
-            if (questionId == lastParentQuestionId){
+            if (questionId == lastParentQuestionId) {
                 continue;
             }
             lastParentQuestionId = questionId;
-            //获取答案
-            const answer = await getAnswerByQuestionId(questionId);
-            if (answer !== null) {
-                allAnswers.push(answer);
+            //获取答案与解析
+            const answerAndMethod = await getAnswerAndMethodByQuestionId(questionId);
+            if (answerAndMethod !== null) {
+                allAnswers.push(answerAndMethod[0]);
+                allMethod.push(answerAndMethod[1]);
             }
         }
         console.debug('AllAnswers:', allAnswers);
-        openAnserPaper(allAnswers);
+        openAnserPaper(allAnswers, allMethod);
     };
 
     // 使用 MutationObserver 监听 URL 的变化
@@ -292,7 +305,7 @@
                     const [key, value] = item.split('=');
                     params[key] = value;
                 });
-                    
+
                 // 提取需要的参数
                 bizCode = parseInt(params.bizCode);
                 paperId = params.paperId;
@@ -313,5 +326,5 @@
 
     // 替换直接调用 main 的逻辑为监听 URL 变化
     observeURLChange();
-    
+
 })();
