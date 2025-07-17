@@ -202,35 +202,32 @@
         }
     };
 
-    const openAnserPaper = (allAnswers ,allMethods) => {
+    const openAnserPaper = (allAnswers, allMethods) => {
         const newWindow = window.open('', '_blank', 'width=600,height=400');
         let htmlContent = `
-           <!DOCTYPE html>
-           <html lang="en">
-           <head>
-               <meta charset="UTF-8">
-               <meta name="viewport" content="width=1200"> <!-- 强制桌面版视口 -->
-               <title>试题答案</title>
-               <style>
-                   body {
-                       font-family: Arial, sans-serif;
-                       padding: 20px;
-                       min-width: 1200px; /* 防止内容挤压 */
-                   }
-                   ul { list-style-type: none; padding: 0; }
-                   li { background: #f0f0f0; margin: 5px 0; padding: 10px; }
-               </style>
-           </head>
-           <body>
-               <h1>试题答案</h1>
-               <ul>
-       `;
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>试题答案</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                    max-width: 1200px;
+                    margin: auto;
+                }
+                ul { list-style-type: none; padding: 0; }
+                li { background: #f0f0f0; margin: 5px 0; padding: 10px; }
+            </style>
+        </head>
+        <body>
+            <h1>试题答案</h1>
+            <ul>
+    `;
 
-        // 遍历答案并填充
-        //    allAnswers.forEach(item => {
-        //        htmlContent += `<li>${item}</li>`;
-        //    });
-        for (var i = 0 ;i <= allAnswers.length ;i++){
+        for (var i = 0; i < allAnswers.length; i++) {
             htmlContent += `<li>${allAnswers[i]}
                                 <details>
                                     <summary>解析</summary>
@@ -239,22 +236,20 @@
                             </li>`;
         }
         htmlContent += `
-               </ul>
-               <div>
-                   <p>Ver.0.6 2025.7</p>
-                   <p>By:志成🍥 ZCROM</p>
-                   <a href="https://zhicheng233.top">主页</a>
-                   <a href="https://blog.zhicheng233.top">个人博客</a>
-                   <a href="https://github.com/zhicheng233/GetEWTAnswers">Github</a>
-                   <p>请开发者打一局 maimai 或者请开发者买 糖🍬 如何？<a href="https://zhicheng233.top/Donate/">帮帮咱🥺~</a>
-               </div>
-           </body>
-           </html>
-       `;
+            </ul>
+            <div>
+                <p>Ver.0.6 2025.7</p>
+                <p>By:志成🍥 ZCROM</p>
+                <a href="https://zhicheng233.top">主页</a>
+                <a href="https://blog.zhicheng233.top">个人博客</a>
+                <a href="https://github.com/zhicheng233/GetEWTAnswers">Github</a>
+                <p>请开发者打一局 maimai 或者请开发者买 糖🍬 如何？<a href="https://zhicheng233.top/Donate/">帮帮咱🥺~</a>
+            </div>
+        </body>
+        </html>
+    `;
         newWindow.document.write(htmlContent);
         newWindow.document.close();
-        console.debug(htmlContent);
-
     };
     const main = async () => {
         var questionIdsList = await getQuestionIdList();
