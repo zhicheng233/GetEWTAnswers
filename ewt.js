@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         升学 E 网通 (EWT360) 试题答案获取bkup
+// @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
 // @version      0.6
 // @description  此脚本在 EWT 试题中获取试题答案喵~
