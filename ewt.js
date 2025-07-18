@@ -203,29 +203,56 @@
     };
 
     const openAnserPaper = (allAnswers, allMethods) => {
+        //判断是否移动端
+        const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         const newWindow = window.open('', '_blank', 'width=600,height=400');
-        let htmlContent = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>试题答案</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    padding: 20px;
-                    max-width: 1200px;
-                    margin: auto;
-                }
-                ul { list-style-type: none; padding: 0; }
-                li { background: #f0f0f0; margin: 5px 0; padding: 10px; }
-            </style>
-        </head>
-        <body>
-            <h1>试题答案</h1>
-            <ul>
-    `;
+        let htmlContent;
+        if (isMobile) {
+            htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width = 1200">
+                    <title>试题答案</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                            max-width: 1200px;
+                        }
+                        ul { list-style-type: none; padding: 0; }
+                        li { background: #f0f0f0; margin: 5px 0; padding: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>试题答案</h1>
+                    <ul>
+            `;
+        } else {
+            htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>试题答案</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                            max-width: 1200px;
+                            margin: auto;
+                        }
+                        ul { list-style-type: none; padding: 0; }
+                        li { background: #f0f0f0; margin: 5px 0; padding: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>试题答案</h1>
+                    <ul>
+            `;
+        }
 
         for (var i = 0; i < allAnswers.length; i++) {
             htmlContent += `<li>${allAnswers[i]}
