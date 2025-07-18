@@ -210,12 +210,12 @@
        <head>
            <meta charset="UTF-8">
            <meta name="viewport" content="width=1200, initial-scale=1.0">
-           <title>试题答案（桌面版）</title>
+           <title>试题答案</title>
            <style>
                body { min-width: 1000px; font-family: Arial, sans-serif; }
                ul { list-style-type: none; padding: 0; }
                 li { background: #f0f0f0; margin: 5px 0; padding: 10px; }
-               /* 其他样式 */
+               /* 适应移动端 */
            </style>
        </head>
 
