@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      0.7
+// @version      0.8
 // @description  此脚本在 EWT 试题中获取试题答案（支持图片显示 + 提交答案）
 // @author       志成🍥
 // @match        https://web.ewt360.com/answer-pc/exam/answer*
@@ -106,54 +106,133 @@
     bubble.title = '展开答案';
     document.body.appendChild(bubble);
 
+    // ==================== 安全 DOM 工具 ====================
+    const el = (tag, cls, attrs) => {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (attrs) Object.entries(attrs).forEach(([k, v]) => { if (v != null) e[k] = v; });
+        return e;
+    };
+
+    const txt = (text) => document.createTextNode(text || '');
+
+    // 将安全的 HTML 字符串（仅含 <img>）转为 DOM 片段
+    const safeHtmlToFragment = (htmlStr) => {
+        const frag = document.createDocumentFragment();
+        if (!htmlStr) return frag;
+        // 只放行 <img src="..."> 且 src 必须是 http://file.ewt360.com/ 开头
+        const imgRe = /<img\s+src="(https?:\/\/file\.ewt360\.com\/[^"]*)"(?:\s+style="([^"]*)")?\s*\/?>/gi;
+        let lastIdx = 0;
+        let m;
+        while ((m = imgRe.exec(htmlStr)) !== null) {
+            if (m.index > lastIdx) {
+                frag.appendChild(txt(htmlStr.slice(lastIdx, m.index)));
+            }
+            const img = document.createElement('img');
+            img.src = m[1];
+            if (m[2]) img.style.cssText = m[2];
+            else { img.style.maxHeight = '36px'; img.style.verticalAlign = 'middle'; }
+            frag.appendChild(img);
+            lastIdx = m.index + m[0].length;
+        }
+        if (lastIdx < htmlStr.length) {
+            frag.appendChild(txt(htmlStr.slice(lastIdx)));
+        }
+        return frag;
+    };
+
     // ==================== 答案弹窗 ====================
     const showAnswerModal = (results, choiceAnswers, questions, paperId, platform, submitBizCode) => {
         document.querySelectorAll('.ewt-overlay').forEach(el => el.remove());
         bubble.classList.remove('show');
 
-        const overlay = document.createElement('div');
-        overlay.className = 'ewt-overlay';
+        const overlay = el('div', 'ewt-overlay');
+        const modal = el('div', 'ewt-modal');
 
-        let html = `
-        <div class="ewt-modal">
-            <div class="ewt-modal-header">
-                <span>试题答案 (共 ${results.length} 题)</span>
-                <div class="ewt-modal-header-btns">
-                    <button class="ewt-modal-minimize" title="收起">&#8212;</button>
-                    <button class="ewt-modal-close" title="关闭">&times;</button>
-                </div>
-            </div>
-            <div class="ewt-modal-body">`;
+        // header
+        const header = el('div', 'ewt-modal-header');
+        header.appendChild(txt('试题答案 (共 ' + results.length + ' 题)'));
+        const headerBtns = el('div', 'ewt-modal-header-btns');
 
+        const minimizeBtn = el('button', 'ewt-modal-minimize', { textContent: '\u2014', title: '收起' });
+        const closeBtn = el('button', 'ewt-modal-close', { textContent: '\u00d7', title: '关闭' });
+        headerBtns.appendChild(minimizeBtn);
+        headerBtns.appendChild(closeBtn);
+        header.appendChild(headerBtns);
+        modal.appendChild(header);
+
+        // body
+        const body = el('div', 'ewt-modal-body');
         results.forEach(r => {
-            html += `<div class="q">
-                <div class="q-num">[${r.num}] ${r.group}</div>
-                <div class="q-ans">答案: ${r.answer}</div>`;
-            if (r.knowledge) html += `<div class="q-know">知识点: ${r.knowledge}</div>`;
-            if (r.analysis) html += `<div class="q-parse">解析: ${r.analysis}</div>`;
+            const qDiv = el('div', 'q');
+
+            const numDiv = el('div', 'q-num');
+            numDiv.textContent = '[' + r.num + '] ' + r.group;
+            qDiv.appendChild(numDiv);
+
+            const ansDiv = el('div', 'q-ans');
+            ansDiv.appendChild(txt('答案: '));
+            ansDiv.appendChild(safeHtmlToFragment(r.answer));
+            qDiv.appendChild(ansDiv);
+
+            if (r.knowledge) {
+                const knowDiv = el('div', 'q-know');
+                knowDiv.textContent = '知识点: ' + r.knowledge;
+                qDiv.appendChild(knowDiv);
+            }
+
+            if (r.analysis) {
+                const parseDiv = el('div', 'q-parse');
+                parseDiv.appendChild(txt('解析: '));
+                parseDiv.appendChild(safeHtmlToFragment(r.analysis));
+                qDiv.appendChild(parseDiv);
+            }
+
             if (r.images && r.images.length) {
                 r.images.forEach(src => {
-                    html += `<div><img src="${src}" style="max-width:100%;margin-top:6px;border-radius:4px;" /></div>`;
+                    if (/^https?:\/\/file\.ewt360\.com\//.test(src)) {
+                        const img = el('img', '', {
+                            src, style: 'max-width:100%;margin-top:6px;border-radius:4px;'
+                        });
+                        qDiv.appendChild(img);
+                    }
                 });
             }
-            html += `</div>`;
+
+            body.appendChild(qDiv);
         });
+        modal.appendChild(body);
 
-        html += `</div>
-            <div class="ewt-modal-footer">
-                Ver.0.7 · By:志成&#127818; ZCROM ·
-                <a href="https://zhicheng233.top" target="_blank">主页</a> ·
-                <a href="https://blog.zhicheng233.top" target="_blank">博客</a> ·
-                <a href="https://github.com/zhicheng233/GetEWTAnswers" target="_blank">Github</a>`;
+        // footer
+        const footer = el('div', 'ewt-modal-footer');
+        const footerFrag = document.createDocumentFragment();
+        footerFrag.appendChild(txt('Ver.0.8 \u00b7 By:\u5fd7\u6210\uD83C\uDF52 ZCROM \u00b7 '));
 
+        const linkHome = el('a', '', { href: 'https://zhicheng233.top', target: '_blank', textContent: '\u4e3b\u9875' });
+        const linkBlog = el('a', '', { href: 'https://blog.zhicheng233.top', target: '_blank', textContent: '\u535a\u5ba2' });
+        const linkGh = el('a', '', { href: 'https://github.com/zhicheng233/GetEWTAnswers', target: '_blank', textContent: 'Github' });
+
+        footerFrag.appendChild(linkHome);
+        footerFrag.appendChild(txt(' \u00b7 '));
+        footerFrag.appendChild(linkBlog);
+        footerFrag.appendChild(txt(' \u00b7 '));
+        footerFrag.appendChild(linkGh);
+        footer.appendChild(footerFrag);
+
+        // 提交按钮
+        let submitBtn, submitMsg;
         if (choiceAnswers.size > 0) {
-            html += `<button class="ewt-btn-submit" id="ewtSubmitBtn">提交选择题答案 (${choiceAnswers.size} 题)</button>
-                     <div class="ewt-submit-msg" id="ewtSubmitMsg"></div>`;
+            submitBtn = el('button', 'ewt-btn-submit', {
+                textContent: '\u63d0\u4ea4\u9009\u62e9\u9898\u7b54\u6848 (' + choiceAnswers.size + ' \u9898)',
+                id: 'ewtSubmitBtn'
+            });
+            submitMsg = el('div', 'ewt-submit-msg', { id: 'ewtSubmitMsg' });
+            footer.appendChild(submitBtn);
+            footer.appendChild(submitMsg);
         }
 
-        html += `</div></div>`;
-
-        overlay.innerHTML = html;
+        modal.appendChild(footer);
+        overlay.appendChild(modal);
         document.body.appendChild(overlay);
 
         // 收起
@@ -161,10 +240,9 @@
             overlay.classList.add('minimized');
             bubble.classList.add('show');
         };
+        minimizeBtn.addEventListener('click', minimize);
 
-        overlay.querySelector('.ewt-modal-minimize').addEventListener('click', minimize);
-
-        // 浮动气泡点击 → 展开
+        // 气泡展开
         bubble.onclick = () => {
             overlay.classList.remove('minimized');
             bubble.classList.remove('show');
@@ -175,7 +253,7 @@
             overlay.remove();
             bubble.classList.remove('show');
         };
-        overlay.querySelector('.ewt-modal-close').addEventListener('click', close);
+        closeBtn.addEventListener('click', close);
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay && !overlay.classList.contains('minimized')) close();
         });
@@ -186,24 +264,22 @@
             }
         });
 
-        // 提交按钮
-        const submitBtn = overlay.querySelector('#ewtSubmitBtn');
-        const submitMsg = overlay.querySelector('#ewtSubmitMsg');
+        // 提交
         if (submitBtn) {
             submitBtn.addEventListener('click', async () => {
                 submitBtn.disabled = true;
-                submitBtn.textContent = '正在提交...';
+                submitBtn.textContent = '\u6b63\u5728\u63d0\u4ea4...';
                 submitMsg.textContent = '';
                 try {
                     const ok = await submitAnswers(paperId, platform, questions, choiceAnswers, submitBizCode);
-                    submitMsg.textContent = ok ? '提交成功!' : '提交失败';
+                    submitMsg.textContent = ok ? '\u63d0\u4ea4\u6210\u529f!' : '\u63d0\u4ea4\u5931\u8d25';
                     submitMsg.style.color = ok ? '#27ae60' : '#e74c3c';
                     if (ok) submitBtn.remove();
-                } catch (e) {
-                    submitMsg.textContent = '提交出错: ' + e.message;
+                } catch (err) {
+                    submitMsg.textContent = '\u63d0\u4ea4\u51fa\u9519: ' + err.message;
                     submitMsg.style.color = '#e74c3c';
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '重试提交';
+                    submitBtn.textContent = '\u91cd\u8bd5\u63d0\u4ea4';
                 }
             });
         }
@@ -212,80 +288,94 @@
     // ==================== 设置面板 ====================
     const showSettings = () => {
         document.querySelectorAll('.ewt-settings').forEach(el => el.remove());
-        const div = document.createElement('div');
-        div.className = 'ewt-settings';
-        div.innerHTML = `
-            <h1>EWT答案获取设置</h1>
-            <h2>请填写 token，用于 API 鉴权</h2>
-            <h3>如何获得?</h3>
-            <p>打开浏览器开发者工具(F12) → Network → 任意一个 gateway.ewt360.com 的请求 → Request Headers → 复制 token 字段的值<br>
-            <b>格式类似 xxxxx-x-xxxxxxxxxxxxx</b></p>
-            <div>
-                <label for="token">token：</label>
-                <input type="password" id="token" value="${GM_getValue('ewtToken', '')}">
-                <button id="toggleToken">显示</button>
-            </div>
-            <div>
-                <button id="saveSettings">保存</button>
-                <button id="cancelSettings">取消</button>
-            </div>
-            <div>
-                <p>Ver.0.7 2026.6</p>
-                <p>By:志成🍥 ZCROM</p>
-                <a href="https://zhicheng233.top">主页</a>
-                <a href="https://blog.zhicheng233.top">个人博客</a>
-                <a href="https://github.com/zhicheng233/GetEWTAnswers">Github</a>
-                <p>请开发者打一局 maimai 或者请开发者买 糖🍬 如何？<a href="https://zhicheng233.top/Donate/">帮帮咱🥺~</a>
-            </div>
-        `;
-        document.body.appendChild(div);
+        const div = el('div', 'ewt-settings');
 
-        const tokenInput = document.getElementById('token');
-        const toggleBtn = document.getElementById('toggleToken');
+        const h1 = el('h1', '', { textContent: 'EWT\u7b54\u6848\u83b7\u53d6\u8bbe\u7f6e' });
+        const h2 = el('h2', '', { textContent: '\u8bf7\u586b\u5199 token\uff0c\u7528\u4e8e API \u9274\u6743' });
+        const h3 = el('h3', '', { textContent: '\u5982\u4f55\u83b7\u5f97?' });
+
+        const p1 = el('p');
+        p1.appendChild(txt('\u6253\u5f00\u6d4f\u89c8\u5668\u5f00\u53d1\u8005\u5de5\u5177(F12) \u2192 Network \u2192 \u4efb\u610f\u4e00\u4e2a gateway.ewt360.com \u7684\u8bf7\u6c42 \u2192 Request Headers \u2192 \u590d\u5236 token \u5b57\u6bb5\u7684\u503c'));
+        p1.appendChild(el('br'));
+        const b = el('b', '', { textContent: '\u683c\u5f0f\u7c7b\u4f3c xxxxx-x-xxxxxxxxxxxxx' });
+        p1.appendChild(b);
+
+        const labelToken = el('label', '', { textContent: 'token\uff1a', htmlFor: 'token' });
+        const tokenInput = el('input', '', { type: 'password', id: 'token', value: GM_getValue('ewtToken', '') });
+        const toggleBtn = el('button', '', { textContent: '\u663e\u793a', id: 'toggleToken' });
         toggleBtn.addEventListener('click', () => {
             if (tokenInput.type === 'password') {
                 tokenInput.type = 'text';
-                toggleBtn.textContent = '隐藏';
+                toggleBtn.textContent = '\u9690\u85cf';
             } else {
                 tokenInput.type = 'password';
-                toggleBtn.textContent = '显示';
+                toggleBtn.textContent = '\u663e\u793a';
             }
         });
 
-        document.getElementById('saveSettings').addEventListener('click', () => {
+        const btnRow = el('div');
+        const saveBtn = el('button', '', { textContent: '\u4fdd\u5b58', id: 'saveSettings' });
+        const cancelBtn = el('button', '', { textContent: '\u53d6\u6d88', id: 'cancelSettings' });
+        btnRow.appendChild(saveBtn);
+        btnRow.appendChild(cancelBtn);
+
+        const infoDiv = el('div');
+        const verP = el('p', '', { textContent: 'Ver.0.7 2026.2' });
+        const authorP = el('p', '', { textContent: 'By:\u5fd7\u6210\uD83C\uDF52 ZCROM' });
+        const linkHome = el('a', '', { href: 'https://zhicheng233.top', textContent: '\u4e3b\u9875' });
+        const linkBlog = el('a', '', { href: 'https://blog.zhicheng233.top', textContent: '\u4e2a\u4eba\u535a\u5ba2' });
+        const linkGh = el('a', '', { href: 'https://github.com/zhicheng233/GetEWTAnswers', textContent: 'Github' });
+        const donateP = el('p');
+        donateP.appendChild(txt('\u8bf7\u5f00\u53d1\u8005\u6253\u4e00\u5c40 maimai \u6216\u8005\u8bf7\u5f00\u53d1\u8005\u4e70 \u7cd6\uD83C\uDF6c \u5982\u4f55\uff1f'));
+        const donateA = el('a', '', { href: 'https://zhicheng233.top/Donate/', textContent: '\u5e2e\u5e2e\u54b1\ud83e\udd7a~' });
+        donateP.appendChild(donateA);
+
+        infoDiv.appendChild(verP);
+        infoDiv.appendChild(authorP);
+        infoDiv.appendChild(linkHome);
+        infoDiv.appendChild(txt(' '));
+        infoDiv.appendChild(linkBlog);
+        infoDiv.appendChild(txt(' '));
+        infoDiv.appendChild(linkGh);
+        infoDiv.appendChild(donateP);
+
+        [h1, h2, h3, p1, labelToken, tokenInput, toggleBtn, btnRow, infoDiv].forEach(e => div.appendChild(e));
+
+        document.body.appendChild(div);
+
+        saveBtn.addEventListener('click', () => {
             GM_setValue('ewtToken', tokenInput.value);
             div.remove();
         });
-        document.getElementById('cancelSettings').addEventListener('click', () => div.remove());
+        cancelBtn.addEventListener('click', () => div.remove());
     };
 
     // ==================== 初始化 ====================
     let token = GM_getValue('ewtToken', '');
 
     if (!token) {
-        alert('首次使用，请先设置 token！\n\nF12 → Network → gateway.ewt360.com 任意请求 → Request Headers → 复制 token');
+        alert('\u9996\u6b21\u4f7f\u7528\uff0c\u8bf7\u5148\u8bbe\u7f6e token\uff01\n\nF12 \u2192 Network \u2192 gateway.ewt360.com \u4efb\u610f\u8bf7\u6c42 \u2192 Request Headers \u2192 \u590d\u5236 token');
         showSettings();
     }
 
-    const settingsBtn = document.createElement('button');
-    settingsBtn.textContent = 'EWT设置';
+    const settingsBtn = el('button', '', { textContent: 'EWT\u8bbe\u7f6e' });
     settingsBtn.style.cssText = 'position:fixed;top:10px;right:10px;z-index:9999;padding:6px 12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;';
     settingsBtn.addEventListener('click', showSettings);
     document.body.appendChild(settingsBtn);
 
     // ==================== URL 参数 ====================
     const qs = window.location.href.split('?')[1] || '';
-    const params = {};
+    const urlParams = {};
     qs.split('&').forEach(item => {
         const [k, v] = item.split('=');
-        if (k) params[k] = decodeURIComponent(v || '');
+        if (k) urlParams[k] = decodeURIComponent(v || '');
     });
 
-    const paperId = params.paperId;
-    const platform = params.platform || '1';
-    const submitBizCode = params.bizCode || '205';
+    const paperId = urlParams.paperId;
+    const platform = urlParams.platform || '1';
+    const submitBizCode = urlParams.bizCode || '205';
 
-    if (!paperId) throw new Error('未找到 paperId');
+    if (!paperId) throw new Error('\u672a\u627e\u5230 paperId');
 
     // ==================== API ====================
     const apiHeaders = () => ({
@@ -339,14 +429,13 @@
         return data.success ? data.data : null;
     };
 
-    const submitAnswers = async (paperId, platform, questions, choiceAnswers, bizCode) => {
-        const newRid = await getReportId(bizCode);
-
+    const submitAnswers = async (pId, pf, qs, ca, bc) => {
+        const newRid = await getReportId(bc);
         const questionList = [];
-        for (const q of questions) {
+        for (const q of qs) {
             const qid = q.questionId;
-            if (choiceAnswers.has(qid)) {
-                const opts = choiceAnswers.get(qid);
+            if (ca.has(qid)) {
+                const opts = ca.get(qid);
                 const flat = [];
                 opts.forEach(opt => flat.push(...opt.split('')));
                 questionList.push({
@@ -359,19 +448,15 @@
                 });
             }
         }
-
         const url = `${BASE}/api/answerprod/web/answer/submitAnswer`;
-        const body = {
-            paperId, reportId: newRid, platform,
-            questionList, bizCode, assignPoints: false,
-        };
+        const body = { paperId: pId, reportId: newRid, platform: pf, questionList, bizCode: bc, assignPoints: false };
         const resp = await fetch(url, { method: 'POST', headers: apiHeaders(), body: JSON.stringify(body) });
         const data = await resp.json();
         return data.success === true;
     };
 
-    // ==================== 工具 ====================
-    const cleanHtml = (text) => {
+    // ==================== HTML 清洗（仅保留图片） ====================
+    const cleanHtmlKeepImg = (text) => {
         if (!text) return '';
         text = text.replace(/<img[^>]*Wirisformula[^>]*src="([^"]*)"[^>]*>/g,
             '<img src="$1" style="max-height:36px;vertical-align:middle;" />');
@@ -384,18 +469,6 @@
         return text.trim();
     };
 
-    const cleanAnswerHtml = (text) => {
-        if (!text) return '';
-        text = text.replace(/<img[^>]*src="([^"]*)"[^>]*>/g,
-            ' <img src="$1" style="max-height:36px;vertical-align:middle;" /> ');
-        text = text.replace(/<br[^>]*>/g, ' ');
-        text = text.replace(/<(?!img\b|\/img\b)[^>]+>/g, '');
-        text = text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
-        text = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-        text = text.replace(/\s+/g, ' ').trim();
-        return text;
-    };
-
     const extractOpts = (rightAnswer) => {
         if (!rightAnswer || !Array.isArray(rightAnswer)) return [];
         return rightAnswer.filter(x => /^[A-Z]+$/.test(x.trim())).map(x => x.trim());
@@ -403,7 +476,7 @@
 
     // ==================== 主流程 ====================
     const main = async () => {
-        if (!token) return alert('请先设置 token！点击右上角 EWT设置');
+        if (!token) return alert('\u8bf7\u5148\u8bbe\u7f6e token\uff01\u70b9\u51fb\u53f3\u4e0a\u89d2 EWT\u8bbe\u7f6e');
 
         try {
             const rid = await getReportId(BIZ_VIEW);
@@ -426,29 +499,26 @@
                 if (opts.length) {
                     answerStr = opts.map(o => o.split('').join(', ')).join('  |  ');
                 } else if (ans.rightAnswer && ans.rightAnswer.length) {
-                    answerStr = cleanAnswerHtml(ans.rightAnswer[0]);
+                    answerStr = cleanHtmlKeepImg(ans.rightAnswer[0]);
                 } else {
-                    answerStr = '(主观题)';
+                    answerStr = '(\u4e3b\u89c2\u9898)';
                 }
 
-                const images = (ans.attachmentImages || []).length
-                    ? ans.attachmentImages
-                    : [];
+                const images = (ans.attachmentImages || []).length ? ans.attachmentImages : [];
 
                 results.push({
                     num: q.questionNumber,
                     group: q.groupName,
                     answer: answerStr,
-                    knowledge: (ans.knowledges || []).map(k => k.title).join('、'),
-                    analysis: cleanHtml(ans.analyse || ''),
+                    knowledge: (ans.knowledges || []).map(k => k.title).join('\u3001'),
+                    analysis: cleanHtmlKeepImg(ans.analyse || ''),
                     images,
                 });
             }
 
             showAnswerModal(results, choiceAnswers, questions, paperId, platform, submitBizCode);
-
         } catch (e) {
-            alert('获取失败: ' + e.message);
+            alert('\u83b7\u53d6\u5931\u8d25: ' + e.message);
             console.error(e);
         }
     };
