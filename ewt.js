@@ -392,25 +392,55 @@
         return data.data.reportId;
     };
 
+    //因为另外一个questionId接口需要userId
+    const getUserId = async () => {
+        const url = `${BASE}/api/usercenter/user/baseinfo`;
+        const resp = await fetch(url, { headers: apiHeaders() });
+        const data = await resp.json();
+        if (!data.success) throw new Error(JSON.stringify(data));
+        return data.data.userId;
+    }
+
     const getQuestions = async (reportId, bizCode) => {
         const url = `${BASE}/api/answerprod/common/answer/sheet/getAnswerSheetSubGroup`;
         const body = { paperId, reportId, platform, bizCode, homeworkId: '0', client: 4 };
         const resp = await fetch(url, { method: 'POST', headers: apiHeaders(), body: JSON.stringify(body) });
         const data = await resp.json();
-        if (!data.success) throw new Error(JSON.stringify(data));
         const questions = [];
-        for (const group of data.data.groupQuestionList) {
-            for (const q of group.questionList) {
+        if (!data.success) {
+            //另一个API,如果是非题组会到这，实际上应该有方法去判断该界面是不是题组的，但我懒得去看了，直接失败就用另一个API(
+            const userId = await getUserId();
+            const url = `${BASE}/api/answerprod/common/answer/answerSheetInfo`;
+            const body = { paperId, reportId, platform, bizCode, userId, client: 1 };
+            const resp = await fetch(url, { method: 'POST', headers: apiHeaders(), body: JSON.stringify(body) });
+            const data = await resp.json();
+
+            for (const q of data.data.questionInfoList) {
                 questions.push({
                     questionId: q.questionId,
                     questionNumber: q.questionNumber,
                     cateId: q.cateId || 1,
                     subjective: q.subjective || false,
-                    groupName: group.groupName || '',
+                    groupName: '',
                 });
             }
+            return questions;
+
+        } else {
+            for (const group of data.data.groupQuestionList) {
+                for (const q of group.questionList) {
+                    questions.push({
+                        questionId: q.questionId,
+                        questionNumber: q.questionNumber,
+                        cateId: q.cateId || 1,
+                        subjective: q.subjective || false,
+                        groupName: group.groupName || '',
+                    });
+                }
+            }
+            return questions;
         }
-        return questions;
+        throw new Error(JSON.stringify(data));
     };
 
     const updateReport = async (reportId, bizCode) => {
