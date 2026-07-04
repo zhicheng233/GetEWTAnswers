@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      0.8
+// @version      1.0
 // @description  此脚本在 EWT 试题中获取试题答案（支持图片显示 + 提交答案）
 // @author       志成🍥
 // @match        https://web.ewt360.com/answer-pc/exam/answer*
@@ -211,7 +211,7 @@
         // footer
         const footer = el('div', 'ewt-modal-footer');
         const footerFrag = document.createDocumentFragment();
-        footerFrag.appendChild(txt('Ver.0.8 \u00b7 By:\u5fd7\u6210\uD83C\uDF52 ZCROM \u00b7 '));
+        footerFrag.appendChild(txt('Ver.1.0 \u00b7 By:\u5fd7\u6210\uD83C\uDF52 ZCROM \u00b7 '));
 
         const linkHome = el('a', '', { href: 'https://zhicheng233.top', target: '_blank', textContent: '\u4e3b\u9875' });
         const linkBlog = el('a', '', { href: 'https://blog.zhicheng233.top', target: '_blank', textContent: '\u535a\u5ba2' });
