@@ -56,8 +56,12 @@
 }
 .ewt-modal-body .q-num { font-weight: bold; color: #333; }
 .ewt-modal-body .q-ans { color: #e74c3c; margin: 4px 0; }
-.ewt-modal-body .q-ans img, .ewt-modal-body .q-parse img {
+.ewt-modal-body .q-ans img {
     max-width: 100%; vertical-align: middle; max-height: 40px;
+}
+.ewt-modal-body .q-parse img {
+    max-width: 100%; height: auto; max-height: 220px;
+    vertical-align: middle; margin-top: 6px;
 }
 .ewt-modal-body .q-know { color: #888; font-size: 12px; }
 .ewt-modal-body .q-parse { color: #555; font-size: 12px; white-space: pre-wrap; margin-top: 4px; }
@@ -184,7 +188,8 @@
             if (r.analysis) {
                 const parseDiv = el('div', 'q-parse');
                 parseDiv.appendChild(txt('解析: '));
-                parseDiv.appendChild(safeHtmlToFragment(r.analysis));
+                parseDiv.insertAdjacentHTML("beforeend", r.analysis.replace(/\\</g, "<").replace(/\\:/g, ":"));
+                console.log(JSON.stringify(r.analysis.replace(/\\</g, "<").replace(/\\:/g, ":")));
                 qDiv.appendChild(parseDiv);
             }
 
@@ -441,6 +446,7 @@
             return questions;
         }
         throw new Error(JSON.stringify(data));
+
     };
 
     const updateReport = async (reportId, bizCode) => {
@@ -489,7 +495,7 @@
     const cleanHtmlKeepImg = (text) => {
         if (!text) return '';
         text = text.replace(/<img[^>]*Wirisformula[^>]*src="([^"]*)"[^>]*>/g,
-            '<img src="$1" style="max-height:36px;vertical-align:middle;" />');
+            '<img src="$1" />');
         text = text.replace(/<br[^>]*>/g, '\n');
         text = text.replace(/<(?!img\b|\/img\b)[^>]+>/g, '');
         text = text.replace(/&ldquo;/g, '\u201c').replace(/&rdquo;/g, '\u201d');
