@@ -534,8 +534,11 @@
                 let answerStr;
                 if (opts.length) {
                     answerStr = opts.map(o => o.split('').join(', ')).join('  |  ');
-                } else if (ans.rightAnswer && ans.rightAnswer.length) {
-                    answerStr = cleanHtmlKeepImg(ans.rightAnswer[0]);
+                } else if (ans.rightAnswer && ans.rightAnswer.length) { // fix: 填空题只有第一个空的答案
+                    answerStr = ans.rightAnswer
+                        .filter(Boolean)
+                        .map(item => cleanHtmlKeepImg(item))
+                        .join('<br />');
                 } else {
                     answerStr = '(\u4e3b\u89c2\u9898)';
                 }
