@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      1.0
-// @description  此脚本在 EWT 试题中获取试题答案（支持图片显示 + 提交答案）
+// @version      1.1
+// @description  此脚本在 EWT 试题中获取试题答案（支持图片显示 + 提交答案，自动从Cookie读取token）
 // @author       志成🍥
 // @match        https://web.ewt360.com/answer-pc/exam/answer*
 // @icon         https://web.ewt360.com/favicon.ico
 // @license      GNU General Public License
-// @grant        GM_getValue
-// @grant        GM_setValue
+// @grant        none
 // @downloadURL  https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.user.js
 // @updateURL    https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.meta.js
 // ==/UserScript==
@@ -89,14 +88,6 @@
 }
 .ewt-float-bubble:hover { background: #3a7bc8; transform: scale(1.06); }
 .ewt-float-bubble.show { display: flex; }
-.ewt-settings {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: white; padding: 20px; border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 100000;
-}
-.ewt-settings input { margin: 10px 0; padding: 5px; width: 260px; }
-.ewt-settings button { margin: 5px; padding: 5px 10px; }
 `;
 
     const styleEl = document.createElement('style');
@@ -109,6 +100,17 @@
     bubble.textContent = '答案';
     bubble.title = '展开答案';
     document.body.appendChild(bubble);
+
+    // ==================== Cookie 获取工具：读取 token Cookie ====================
+    function getCookie(name) {
+        const cookiePairs = document.cookie.split('; ');
+        for (const pair of cookiePairs) {
+            const [key, val] = pair.split('=');
+            if (key === name) return decodeURIComponent(val);
+        }
+        return '';
+    }
+    const token = getCookie('token');
 
     // ==================== 安全 DOM 工具 ====================
     const el = (tag, cls, attrs) => {
@@ -211,7 +213,7 @@
         // footer
         const footer = el('div', 'ewt-modal-footer');
         const footerFrag = document.createDocumentFragment();
-        footerFrag.appendChild(txt('Ver.1.0 \u00b7 By:\u5fd7\u6210\uD83C\uDF52 ZCROM \u00b7 '));
+        footerFrag.appendChild(txt('Ver.1.1 \u00b7 By:\u5fd7\u6210\uD83C\uDF52 ZCROM \u00b7 '));
 
         const linkHome = el('a', '', { href: 'https://zhicheng233.top', target: '_blank', textContent: '\u4e3b\u9875' });
         const linkBlog = el('a', '', { href: 'https://blog.zhicheng233.top', target: '_blank', textContent: '\u535a\u5ba2' });
@@ -289,84 +291,6 @@
             });
         }
     };
-
-    // ==================== 设置面板 ====================
-    const showSettings = () => {
-        document.querySelectorAll('.ewt-settings').forEach(el => el.remove());
-        const div = el('div', 'ewt-settings');
-
-        const h1 = el('h1', '', { textContent: 'EWT\u7b54\u6848\u83b7\u53d6\u8bbe\u7f6e' });
-        const h2 = el('h2', '', { textContent: '\u8bf7\u586b\u5199 token\uff0c\u7528\u4e8e API \u9274\u6743' });
-        const h3 = el('h3', '', { textContent: '\u5982\u4f55\u83b7\u5f97?' });
-
-        const p1 = el('p');
-        p1.appendChild(txt('\u6253\u5f00\u6d4f\u89c8\u5668\u5f00\u53d1\u8005\u5de5\u5177(F12) \u2192 Network \u2192 \u4efb\u610f\u4e00\u4e2a gateway.ewt360.com \u7684\u8bf7\u6c42 \u2192 Request Headers \u2192 \u590d\u5236 token \u5b57\u6bb5\u7684\u503c'));
-        p1.appendChild(el('br'));
-        const b = el('b', '', { textContent: '\u683c\u5f0f\u7c7b\u4f3c xxxxx-x-xxxxxxxxxxxxx' });
-        p1.appendChild(b);
-
-        const labelToken = el('label', '', { textContent: 'token\uff1a', htmlFor: 'token' });
-        const tokenInput = el('input', '', { type: 'password', id: 'token', value: GM_getValue('ewtToken', '') });
-        const toggleBtn = el('button', '', { textContent: '\u663e\u793a', id: 'toggleToken' });
-        toggleBtn.addEventListener('click', () => {
-            if (tokenInput.type === 'password') {
-                tokenInput.type = 'text';
-                toggleBtn.textContent = '\u9690\u85cf';
-            } else {
-                tokenInput.type = 'password';
-                toggleBtn.textContent = '\u663e\u793a';
-            }
-        });
-
-        const btnRow = el('div');
-        const saveBtn = el('button', '', { textContent: '\u4fdd\u5b58', id: 'saveSettings' });
-        const cancelBtn = el('button', '', { textContent: '\u53d6\u6d88', id: 'cancelSettings' });
-        btnRow.appendChild(saveBtn);
-        btnRow.appendChild(cancelBtn);
-
-        const infoDiv = el('div');
-        const verP = el('p', '', { textContent: 'Ver.0.7 2026.2' });
-        const authorP = el('p', '', { textContent: 'By:\u5fd7\u6210\uD83C\uDF52 ZCROM' });
-        const linkHome = el('a', '', { href: 'https://zhicheng233.top', textContent: '\u4e3b\u9875' });
-        const linkBlog = el('a', '', { href: 'https://blog.zhicheng233.top', textContent: '\u4e2a\u4eba\u535a\u5ba2' });
-        const linkGh = el('a', '', { href: 'https://github.com/zhicheng233/GetEWTAnswers', textContent: 'Github' });
-        const donateP = el('p');
-        donateP.appendChild(txt('\u8bf7\u5f00\u53d1\u8005\u6253\u4e00\u5c40 maimai \u6216\u8005\u8bf7\u5f00\u53d1\u8005\u4e70 \u7cd6\uD83C\uDF6c \u5982\u4f55\uff1f'));
-        const donateA = el('a', '', { href: 'https://zhicheng233.top/Donate/', textContent: '\u5e2e\u5e2e\u54b1\ud83e\udd7a~' });
-        donateP.appendChild(donateA);
-
-        infoDiv.appendChild(verP);
-        infoDiv.appendChild(authorP);
-        infoDiv.appendChild(linkHome);
-        infoDiv.appendChild(txt(' '));
-        infoDiv.appendChild(linkBlog);
-        infoDiv.appendChild(txt(' '));
-        infoDiv.appendChild(linkGh);
-        infoDiv.appendChild(donateP);
-
-        [h1, h2, h3, p1, labelToken, tokenInput, toggleBtn, btnRow, infoDiv].forEach(e => div.appendChild(e));
-
-        document.body.appendChild(div);
-
-        saveBtn.addEventListener('click', () => {
-            GM_setValue('ewtToken', tokenInput.value);
-            div.remove();
-        });
-        cancelBtn.addEventListener('click', () => div.remove());
-    };
-
-    // ==================== 初始化 ====================
-    let token = GM_getValue('ewtToken', '');
-
-    if (!token) {
-        alert('\u9996\u6b21\u4f7f\u7528\uff0c\u8bf7\u5148\u8bbe\u7f6e token\uff01\n\nF12 \u2192 Network \u2192 gateway.ewt360.com \u4efb\u610f\u8bf7\u6c42 \u2192 Request Headers \u2192 \u590d\u5236 token');
-        showSettings();
-    }
-
-    const settingsBtn = el('button', '', { textContent: 'EWT\u8bbe\u7f6e' });
-    settingsBtn.style.cssText = 'position:fixed;top:10px;right:10px;z-index:9999;padding:6px 12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;';
-    settingsBtn.addEventListener('click', showSettings);
-    document.body.appendChild(settingsBtn);
 
     // ==================== URL 参数 ====================
     const qs = window.location.href.split('?')[1] || '';
@@ -512,7 +436,11 @@
 
     // ==================== 主流程 ====================
     const main = async () => {
-        if (!token) return alert('\u8bf7\u5148\u8bbe\u7f6e token\uff01\u70b9\u51fb\u53f3\u4e0a\u89d2 EWT\u8bbe\u7f6e');
+        // 校验Cookie中是否存在token
+        if (!token) {
+            alert('未在Cookie中检测到token，请刷新页面重新登录EWT360！');
+            return;
+        }
 
         try {
             const rid = await getReportId(BIZ_VIEW);
