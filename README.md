@@ -129,10 +129,10 @@
 
 ## :star:Star趋势
 
-<a href="https://star-history.com/#zhicheng233/GetEWTAnswers&Date">
+<a href="https://www.star-history.com/?repos=zhicheng233%2FGetEWTAnswers&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=zhicheng233/GetEWTAnswers&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=zhicheng233/GetEWTAnswers&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=zhicheng233/GetEWTAnswers&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=zhicheng233/GetEWTAnswers&type=date&theme=dark&legend=top-left&sealed_token=AVvcIL__Hv8XQ-I5uNTz3KAmYOkOhxc3feNNM70j2yBuq9cpkDeVQ9JtosYtG3VbsbPzqDz6rTp1fTz_gXX-BXAnT2mrOgi_uC4_TU_ZHoNyqsPHFfPc_wgKB6fPnT_PicyTueotiWp30K7lA0su8EF0FPvlAJ9f-G--7MegS76w2Y4gI4_ehVAlH5ZA" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=zhicheng233/GetEWTAnswers&type=date&legend=top-left&sealed_token=AVvcIL__Hv8XQ-I5uNTz3KAmYOkOhxc3feNNM70j2yBuq9cpkDeVQ9JtosYtG3VbsbPzqDz6rTp1fTz_gXX-BXAnT2mrOgi_uC4_TU_ZHoNyqsPHFfPc_wgKB6fPnT_PicyTueotiWp30K7lA0su8EF0FPvlAJ9f-G--7MegS76w2Y4gI4_ehVAlH5ZA" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=zhicheng233/GetEWTAnswers&type=date&legend=top-left&sealed_token=AVvcIL__Hv8XQ-I5uNTz3KAmYOkOhxc3feNNM70j2yBuq9cpkDeVQ9JtosYtG3VbsbPzqDz6rTp1fTz_gXX-BXAnT2mrOgi_uC4_TU_ZHoNyqsPHFfPc_wgKB6fPnT_PicyTueotiWp30K7lA0su8EF0FPvlAJ9f-G--7MegS76w2Y4gI4_ehVAlH5ZA" />
  </picture>
 </a>
