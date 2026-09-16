@@ -1,17 +1,6 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-<<<<<<< HEAD
-// @version      1.1
-// @description  此脚本在 EWT 试题中获取试题答案（支持图片显示 + 提交答案，自动从Cookie读取token）
-// @author       志成🍥
-// @match        https://web.ewt360.com/answer-pc/exam/answer*
-// @icon         https://web.ewt360.com/favicon.ico
-// @license      GNU General Public License
-// @grant        none
-// @downloadURL  https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.user.js
-// @updateURL    https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.meta.js
-=======
 // @version      1.5
 // @description  此脚本在 EWT 试题中获取试题答案（全自动获取 token + 图片显示 + 提交答案 + 作业页 201 旁路/proofread）
 // @author       志成🍥, 知识pro, 2P2O5, hmruu
@@ -24,7 +13,6 @@
 // @grant        unsafeWindow
 // @downloadURL https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.user.js
 // @updateURL https://update.greasyfork.org/scripts/524802/%E5%8D%87%E5%AD%A6%20E%20%E7%BD%91%E9%80%9A%20%28EWT360%29%20%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88%E8%8E%B7%E5%8F%96.meta.js
->>>>>>> tag/new-version
 // ==/UserScript==
 
 (function () {
@@ -391,11 +379,7 @@
         // footer
         const footer = el('div', 'ewt-modal-footer');
         const footerFrag = document.createDocumentFragment();
-<<<<<<< HEAD
-        footerFrag.appendChild(txt('Ver.1.1 \u00b7 By:\u5fd7\u6210\uD83C\uDF52 ZCROM \u00b7 '));
-=======
         footerFrag.appendChild(txt('Ver.' + Version + ' · By:志成🍥 ZCROM · 知识pro · 2P2O5 · hmruu · '));
->>>>>>> tag/new-version
 
         const linkHome = el('a', '', { href: 'https://zhicheng233.top', target: '_blank', textContent: '\u4e3b\u9875' });
         const linkBlog = el('a', '', { href: 'https://blog.zhicheng233.top', target: '_blank', textContent: '\u535a\u5ba2' });
@@ -553,14 +537,6 @@
         }
     };
 
-<<<<<<< HEAD
-    // ==================== URL 参数 ====================
-    const qs = window.location.href.split('?')[1] || '';
-    const urlParams = {};
-    qs.split('&').forEach(item => {
-        const [k, v] = item.split('=');
-        if (k) urlParams[k] = decodeURIComponent(v || '');
-=======
     // ==================== 设置面板 ====================
     const showSettings = () => {
         document.querySelectorAll('.ewt-settings').forEach(el => el.remove());
@@ -688,7 +664,6 @@
         retryBtn.style.cssText = 'position:fixed;top:10px;right:90px;z-index:9999;padding:6px 12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;';
         retryBtn.addEventListener('click', () => { GM_setValue('ewtToken', ''); sniffedToken = ''; main(); });
         document.body.appendChild(retryBtn);
->>>>>>> tag/new-version
     });
 
     // ==================== URL 参数 ====================
@@ -1104,13 +1079,6 @@
 
     let running = false;
     const main = async () => {
-<<<<<<< HEAD
-        // 校验Cookie中是否存在token
-        if (!token) {
-            alert('未在Cookie中检测到token，请刷新页面重新登录EWT360！');
-            return;
-        }
-=======
         if (running) return;
         running = true;
         try { await runMain(); } finally { running = false; }
@@ -1145,7 +1113,6 @@
             return;
         }
         toast('token \u5df2\u5c31\u7eea\uff0c\u6b63\u5728\u62c9\u53d6\u7b54\u6848...', '#27ae60');
->>>>>>> tag/new-version
 
         try {
             // 取答案两条路：
@@ -1235,13 +1202,6 @@
                 let answerStr;
                 if (opts.length) {
                     answerStr = opts.map(o => o.split('').join(', ')).join('  |  ');
-<<<<<<< HEAD
-                } else if (ans.rightAnswer && ans.rightAnswer.length) { // fix: 填空题只有第一个空的答案
-                    answerStr = ans.rightAnswer
-                        .filter(Boolean)
-                        .map(item => cleanHtmlKeepImg(item))
-                        .join('<br />');
-=======
                 } else if (rawArr.length === 1) {
                     answerStr = cleanHtmlKeepImg(rawArr[0]);
                 } else if (rawArr.length) {
@@ -1259,7 +1219,6 @@
                             return (fromKids || !hasOwnNumber) ? '(' + (xi + 1) + ') ' + cleaned : cleaned;
                         })
                         .join('\n');
->>>>>>> tag/new-version
                 } else {
                     // \u5ba2\u89c2\u9898\u7684 rightAnswer \u5728\u672a\u4ea4\u5377\u4f5c\u4e1a\u91cc\u88ab\u670d\u52a1\u7aef\u6263\u7a7a\uff08\u524d\u7aef\u5ba1\u8ba1\u786e\u8ba4\uff1a\u95e8\u63a7\u5728\u670d\u52a1\u7aef\uff0c
                     // \u975e\u524d\u7aef\u9690\u85cf\uff09\u3002\u653f\u6cbb/\u6570\u5b66\u7684\u89e3\u6790\u5c3e\u53e5\u5199\u4e86\u660e\u6587\u7b54\u6848\uff08\u300c\u6545\u672c\u9898\u9009C\u300d\uff09\uff0c\u80fd\u63d0\u53d6\u5e76\u6807\u6ce8\u6765\u6e90\uff1b
