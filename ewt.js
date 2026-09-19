@@ -200,7 +200,8 @@
         }
         return '';
     }
-    const token = getCookie('token');
+    // 保存 Cookie 中的初始 token；后续可由缓存、存储扫描或嗅探结果更新。
+    const cookieToken = getCookie('token');
 
     // ==================== 安全 DOM 工具 ====================
     const el = (tag, cls, attrs) => {
@@ -652,7 +653,7 @@
     }
 
     // ==================== 初始化 ====================
-    let token = '';
+    let token = cookieToken;
 
     whenReady(() => {
         const settingsBtn = el('button', '', { textContent: 'EWT\u8bbe\u7f6e' });
