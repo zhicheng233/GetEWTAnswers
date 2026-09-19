@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         升学 E 网通 (EWT360) 试题答案获取
 // @namespace    https://ewt.zhicheng233.top/examanswer
-// @version      1.5
+// @version      1.5.1
 // @description  此脚本在 EWT 试题中获取试题答案（全自动获取 token + 图片显示 + 提交答案 + 作业页 201 旁路/proofread）
 // @author       志成🍥, 知识pro, 2P2O5, hmruu
 // @match        https://web.ewt360.com/answer-pc/exam/answer*
@@ -18,7 +18,7 @@
 (function () {
     'use strict';
     // ==== 版本号 记得改这里====
-    const Version = '1.5';
+    const Version = '1.5.1';
     // ==== token 嗅探器：必须在任何页面请求之前安装 ====
     const TOKEN_RE = /^\d{3,}-\d+-[A-Za-z0-9]{8,}$/;
     const TOKEN_LOOSE = /\b\d{3,}-\d+-[A-Za-z0-9]{8,}\b/;
@@ -200,7 +200,8 @@
         }
         return '';
     }
-    const token = getCookie('token');
+    // 保存 Cookie 中的初始 token；后续可由缓存、存储扫描或嗅探结果更新。
+    const cookieToken = getCookie('token');
 
     // ==================== 安全 DOM 工具 ====================
     const el = (tag, cls, attrs) => {
@@ -652,7 +653,7 @@
     }
 
     // ==================== 初始化 ====================
-    let token = '';
+    let token = cookieToken;
 
     whenReady(() => {
         const settingsBtn = el('button', '', { textContent: 'EWT\u8bbe\u7f6e' });
